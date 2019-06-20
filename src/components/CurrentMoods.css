@@ -1,0 +1,68 @@
+.current-moods-page {
+    margin:1em;
+}
+
+.current-moods {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.mood-btn {
+    font-size: 1.75em;
+    border: none;
+    display: inline-block;
+    padding: 1em;
+    border-radius: .5em;
+    color: white;
+    margin: .2em;
+    flex: 1 1 0;
+}
+.submit-btn {
+    font-size: 1.75em;
+    border: none;
+    display: block;
+    padding: 1em;
+    border-radius: .5em;
+    color: white;
+    margin: auto;
+    flex: 1 1 0;
+    background-color: black;
+}
+
+.current-moods .mood-btn:hover {
+    opacity: 0.7;
+}
+
+.emoji--large {
+    font-size: 2em;
+}
+
+.current-moods-very-sad {
+    background-color: darkred;
+}
+
+.current-moods-sad {
+    background-color: darkorange;
+}
+
+.current-moods-slightly-sad {
+    background-color: orange;
+}
+
+.current-moods-slightly-happy {
+    background-color: lightseagreen;
+}
+
+.current-moods-happy {
+    background-color: cornflowerblue;
+}
+
+.current-moods-very-happy {
+    background-color: mediumpurple;
+}
+.current-mood-text{
+    padding:0.5em;
+    width:100%;
+    min-height: 5em;
+    border-radius: 1em;
+}
