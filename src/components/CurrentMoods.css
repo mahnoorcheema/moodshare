@@ -21,16 +21,24 @@
     font-size: 1.75em;
     border: none;
     display: block;
-    padding: 1em;
+    padding: 0.75em;
     border-radius: .5em;
     color: white;
-    margin: auto;
+    margin: 0.5em auto;
     flex: 1 1 0;
     background-color: black;
 }
+.current-moods .mood-btn {
+    cursor: pointer;
+    transition: filter .2s ease;
+}
+
+.current-moods:hover .mood-btn {
+    filter: saturate(50%) blur(2px);
+}
 
 .current-moods .mood-btn:hover {
-    opacity: 0.7;
+    filter: saturate(100%) blur(0px)
 }
 
 .emoji--large {
