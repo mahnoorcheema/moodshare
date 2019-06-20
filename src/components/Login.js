@@ -1,5 +1,9 @@
 import React from 'react';
-import * as firebase from "firebase";
+import './Login.css';
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/firestore";
+import {Link} from 'react-router-dom';
 
 
 export default class Login extends React.Component {
@@ -13,15 +17,10 @@ export default class Login extends React.Component {
 
   signIn = async (event) => {
     event.preventDefault();
-    await (firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password));
-
-    const user = firebase.auth().currentUser;
-    if (user) {
-      console.log("user is signed in")
-    }
-    else{
-      console.log("error logging in");
-    }
+    await (firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password))
+      .catch(function (error) {
+        console.log(error.code, error.message);
+      });
   };
 
   handleInputChange = (event) => {
@@ -34,13 +33,20 @@ export default class Login extends React.Component {
 
   render() {
     return (
-      <form onSubmit={this.signIn}>
+      <form className="login-form" onSubmit={this.signIn}>
         <h2>Login</h2>
-        <label>Email: </label>
-        <input name="email" type="username" onChange={this.handleInputChange}/>
-        <label>Password: </label>
-        <input name="password" type="password" onChange={this.handleInputChange}/>
-        <button type="submit">Submit</button>
+        <label>
+          Email:
+          <input name="email" type="email" placeholder="email" onChange={this.handleInputChange}/>
+        </label>
+
+        <label>
+          Password:
+          <input name="password" type="password" placeholder="password" onChange={this.handleInputChange}/>
+        </label>
+        <button className="submit-btn" type="submit">Log In</button>
+        Don't have an account? Sign up &nbsp;
+        <Link to="/create-account">here </Link>
       </form>)
   };
 }
