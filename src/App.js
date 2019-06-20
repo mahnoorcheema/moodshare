@@ -6,6 +6,7 @@ import firebaseConfig from './firebaseConfig.json'
 import CurrentMoods from "./components/CurrentMoods";
 import Login from "./components/Login";
 import {Route, Link, BrowserRouter as Router} from "react-router-dom";
+import CreateAccount from "./components/CreateAccount";
 
 
 firebase.initializeApp(firebaseConfig);
@@ -22,8 +23,9 @@ const App = () => {
           <Link to="/moods">Current Mood</Link>
         </li>
       </ul>
-      <Route path="/login" component={Login} />
-      <Route path="/moods" component={CurrentMoods} />
+      <Route path="/login" component={Login}/>
+      <Route path="/moods" component={CurrentMoods}/>
+      <Route path="/create-account" component={CreateAccount}/>
     </Router>
   </>
 };
