@@ -1,0 +1,9 @@
+.account-form{
+    background-color: lightgrey;
+    margin:3em;
+    border-radius: 1em;
+    padding: 1em;
+}
+.account-form > :first-child {
+    margin-top: 0;
+}
