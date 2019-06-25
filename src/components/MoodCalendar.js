@@ -1,5 +1,7 @@
 import React from 'react';
+import ReactModal from 'react-modal';
 import "./MoodCalendar.css";
+import CurrentMoods from "./CurrentMoods";
 const NUM_ROWS = 5;
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 const DAYS_OF_THE_WEEK = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -18,13 +20,26 @@ function getDatesForLastMonth(endDate) {
   return datesForLastMonth;
 }
 export default class MoodCalendar extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {modalIsOpen: false};
+  }
+
+  openModal = () => {
+    this.setState({modalIsOpen: true});
+  };
+
+  closeModal = () => {
+    this.setState({modalIsOpen: false});
+  };
+
 
   render() {
     const today = new Date();
     const days = getDatesForLastMonth(today);
     const spanningTwoMonths = days[0].getMonth() !== today.getMonth();
     return (
-      <div>
+      <div className="calendar-background">
         <h2>Mood Calendar</h2>
         <h3>
           {spanningTwoMonths
@@ -39,6 +54,15 @@ export default class MoodCalendar extends React.Component {
               {date.getDate()}
             </li>)}
         </ol>
+        <button type="button" onClick={this.openModal}>Add Today's Mood</button>
+        <ReactModal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={this.closeModal}
+          contentLabel="Mood Selector">
+          <div>
+            <CurrentMoods/>
+          </div>
+        </ReactModal>
       </div>
     );
   }
