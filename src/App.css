@@ -1,3 +1,17 @@
 .App {
     text-align: center;
 }
+
+.nav-bar{
+    display:flex;
+    width:100%;
+    background-color:darkslateblue;
+    list-style-type: none;
+}
+.nav-bar li{
+    font-size:15px;
+    padding:2em 2em;
+    color:white;
+    text-decoration: none;
+    background-color:slateblue;
+}
