@@ -13,7 +13,7 @@ export default class Login extends React.Component {
       email: "",
       password: "",
     };
-  }
+  };
 
   signIn = async (event) => {
     event.preventDefault();
