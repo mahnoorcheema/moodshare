@@ -42,19 +42,24 @@ const App = () => {
 
   return <>
     <Router>
-      <nav>
-        <ul className="nav-bar">
-          <h1>M☺☻d Share</h1>
-          <li>
-            {!user ?
-            <Link to="/login" className="nav-bar-element">Login</Link>
-            : <Link to="/login" className="nav-bar-element">Logout</Link>}
-          </li>
-          <li>
-            <Link to="/calendar" className="nav-bar-element">Mood Calendar</Link>
-          </li>
-        </ul>
-      </nav>
+      <div className="nav-bar-container">
+        <nav className="nav-bar">
+          <h1 className="app-brand">M☺☻d Share</h1>
+          <ul className="nav-bar__nav-links">
+            <li>
+              <Link to="/calendar" className="nav-link">Mood Calendar</Link>
+            </li>
+            <li>
+              {!user
+                ? <Link to="/login" className="nav-link">Login</Link>
+                : <Link to="/login" className="nav-link">Logout</Link>}
+            </li>
+            <li className="avatar">
+              M
+            </li>
+          </ul>
+        </nav>
+      </div>
       <Route path="/login" component={Login}/>
       <Route path="/create-account" component={CreateAccount}/>
 
