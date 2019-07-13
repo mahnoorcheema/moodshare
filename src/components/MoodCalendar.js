@@ -129,19 +129,17 @@ export default class MoodCalendar extends React.Component {
           }
         </h3>
 
-        <div className="viewer-tabs">
+        <ul className="viewer-tabs">
           <button className="button-tab" onClick={() => this.setState({currentlyViewing: ""})} >{this.state.name}</button>
           {viewers.map(viewer =>
-            <ul className="button-tab-ul">
               <li key={viewer}>
                 <button className="button-tab" onClick={() => this.setState({currentlyViewing: viewer})}>{viewer}</button>
               </li>
-            </ul>
           )}
           {this.state.showingShareForm
           ? <ShareCalendarForm/>
           : <button className="button-tab" onClick={() => this.setState({showingShareForm: true})}>  +  </button>}
-        </div>
+        </ul>
 
         <div className="calendar-container ">
           <div className="more-info">
