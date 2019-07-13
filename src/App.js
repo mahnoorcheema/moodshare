@@ -44,7 +44,7 @@ const App = () => {
     <Router>
       <div className="nav-bar-container">
         <nav className="nav-bar">
-          <h1 className="app-brand">M☺☻d Share</h1>
+          <h1 className="app-brand">M☺☻d S h a r e</h1>
           <ul className="nav-bar__nav-links">
             <li>
               <Link to="/calendar" className="nav-link">Mood Calendar</Link>
