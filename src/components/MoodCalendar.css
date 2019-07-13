@@ -12,6 +12,26 @@
     border-bottom-right-radius: 2em;
 }
 
+.viewer-tabs{
+    margin-left: 0.5em;
+    display: flex;
+}
+.button-tab{
+    border-top-right-radius: 0.5em;
+    border-top-left-radius: 0.5em;
+    border-style: none;
+    padding:0.75em;
+    margin-right: 0.05em;
+    background-color: steelblue;
+    color: white;
+}
+
+.button-tab-ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
 .day-button{
     margin:2em;
     text-align: left;
@@ -31,15 +51,16 @@
     color:white;
 
 }
-.calendar-container{
-    margin:0.5em;
+.calendar-container {
+    margin-left:0.5em;
+    margin-right:0.5em;
     display: flex;
 }
 
 .more-info{
     background-color: dodgerblue;
     width:75vh;
-    border-top-left-radius: 2em;
+    /*border-top-left-radius: 2em;*/
     border-bottom-left-radius: 2em;
     padding:1em;
 }
@@ -49,5 +70,5 @@
 }
 .font-size-large{
     font-size: xx-large;
-    padding:0.25em;
+    padding: 0.25em;
 }

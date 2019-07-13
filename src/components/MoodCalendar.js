@@ -5,6 +5,7 @@ import CurrentMoods from "./CurrentMoods";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import CalendarDetails from "./CalendarDetails";
+import ShareCalendarForm from "./ShareCalendarForm";
 
 const NUM_ROWS = 5;
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
@@ -29,6 +30,7 @@ function isSameDay(dateA, dateB) {
 }
 
 export default class MoodCalendar extends React.Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,6 +40,10 @@ export default class MoodCalendar extends React.Component {
       disabledButton:false,
       selectedDay: "",
       selectedDayMoods: [],
+      showingShareForm: false,
+      name:"",
+      viewers:[],
+      currentlyViewing:"",
     };
   }
 
@@ -50,7 +56,10 @@ export default class MoodCalendar extends React.Component {
   };
 
   getMoods = async () => {
-    const {uid} = firebase.auth().currentUser;
+    const {uid} =
+      // email ?
+      // admin.auth().getUserByEmail(email):
+      firebase.auth().currentUser;
     return firebase.firestore()
       .collection("users")
       .doc(uid)
@@ -68,8 +77,23 @@ export default class MoodCalendar extends React.Component {
       );
   };
 
+  getViewers = async() => {
+    return firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .get().then(snapshot => snapshot.data().viewers);
+  };
+
+  getName = async () =>{
+    return firebase.firestore().collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .get().then(snapshot => snapshot.data().name);
+  };
+
   async componentDidMount() {
     try {
+      const name = await this.getName();
+      const viewers = await this.getViewers();
       const moods = await this.getMoods();
       const days = getDatesForLastMonth(new Date());
 
@@ -80,6 +104,9 @@ export default class MoodCalendar extends React.Component {
 
       this.setState({moodsByDate});
       console.log("Got moods!", moodsByDate);
+
+      this.setState({name});
+      this.setState({viewers});
     } catch (error) {
       console.error("Failed to fetch moods", error);
     }
@@ -90,7 +117,7 @@ export default class MoodCalendar extends React.Component {
     const today = new Date();
     const days = getDatesForLastMonth(new Date());
     const spanningTwoMonths = days[0].getMonth() !== today.getMonth();
-    const {moodsByDate} = this.state;
+    const {moodsByDate, viewers} = this.state;
 
     return (
       <>
@@ -101,9 +128,21 @@ export default class MoodCalendar extends React.Component {
             : MONTHS[today.getMonth()]
           }
         </h3>
-        <div>
-          <button>Share Calendar</button>
+
+        <div className="viewer-tabs">
+          <button className="button-tab" onClick={() => this.setState({currentlyViewing: ""})} >{this.state.name}</button>
+          {viewers.map(viewer =>
+            <ul className="button-tab-ul">
+              <li key={viewer}>
+                <button className="button-tab" onClick={() => this.setState({currentlyViewing: viewer})}>{viewer}</button>
+              </li>
+            </ul>
+          )}
+          {this.state.showingShareForm
+          ? <ShareCalendarForm/>
+          : <button className="button-tab" onClick={() => this.setState({showingShareForm: true})}>  +  </button>}
         </div>
+
         <div className="calendar-container ">
           <div className="more-info">
             {this.state.showCalendarDetails ? <CalendarDetails date={this.state.selectedDay} moods={this.state.selectedDayMoods}/> :null}
@@ -129,6 +168,7 @@ export default class MoodCalendar extends React.Component {
             </ol>
           </div>
         </div>
+
         <button type="button" onClick={this.openModal} className="submit-btn">Add Today's Mood</button>
         <ReactModal
           isOpen={this.state.modalIsOpen}
