@@ -1,11 +1,15 @@
 input {
-    border:none;
-    background-color: transparent;
-    border-bottom: 2px solid darkslategrey;
+    border: 2px solid darkslategrey;
+    border-radius: 2em;
     width: 100%;
+    padding:0.5em;
+    font-size: large;
+    background-color: white;
 }
 input:focus {
-    border-bottom:4px solid dodgerblue;
+    border:2px solid dodgerblue;
+    border-radius:2em;
+    outline: transparent;
 }
 .login-form {
     background-color: lightgrey;

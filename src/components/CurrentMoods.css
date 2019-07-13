@@ -26,7 +26,7 @@
     color: white;
     margin: 0.5em auto;
     flex: 1 1 0;
-    background-color: black;
+    background-color: midnightblue;
 }
 .current-moods .mood-btn {
     cursor: pointer;

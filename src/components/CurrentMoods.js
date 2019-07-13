@@ -9,6 +9,8 @@ export default class CurrentMoods extends React.Component {
     this.state = {
       mood: "",
       value: "",
+      date: "",
+      emoji: "",
     };
   }
 
@@ -16,14 +18,16 @@ export default class CurrentMoods extends React.Component {
     this.setState({value: event.target.value})
   };
 
-  uploadData = (mood, value) =>
+
+  uploadData = (mood, value, emoji) =>
     firebase.firestore().collection('users')
       .doc(firebase.auth().currentUser.uid)
       .collection('moods')
-      .doc()
-      .set({
+      .add({
         mood: mood,
-        value: value
+        value: value,
+        emoji:emoji,
+        date: new Date()
       }).then(function () {
       console.log("Document successfully written");
     }).catch(function (error) {
@@ -35,32 +39,32 @@ export default class CurrentMoods extends React.Component {
       <main className="current-moods-page">
         <h2>How are you feeling today?</h2>
         <div className="current-moods">
-          <button className="mood-btn current-moods-very-sad" onClick={() => this.setState({mood: "angry"})}>
+          <button className="mood-btn current-moods-very-sad" onClick={() => this.setState({mood: "angry", emoji:"😭"})}>
             <span className="emoji--large" role="img" aria-label="Crying Face">😭</span>
             <br/>
             Angry
           </button>
-          <button className="mood-btn current-moods-sad" onClick={() => this.setState({mood: "sad"})}>
+          <button className="mood-btn current-moods-sad" onClick={() => this.setState({mood: "sad", emoji:"😭"})}>
             <span className="emoji--large" role="img" aria-label="Teary Face">😥</span>
             <br/>
             Sad
           </button>
-          <button className="mood-btn current-moods-slightly-sad" onClick={() => this.setState({mood: "disappointed"})}>
+          <button className="mood-btn current-moods-slightly-sad" onClick={() => this.setState({mood: "disappointed", emoji:"😟"})}>
             <span className="emoji--large" role="img" aria-label="Frowning Face">😟</span>
             <br/>
             Disappointed
           </button>
-          <button className="mood-btn current-moods-slightly-happy" onClick={() => this.setState({mood: "content"})}>
+          <button className="mood-btn current-moods-slightly-happy" onClick={() => this.setState({mood: "content", emoji:"😊"})}>
             <span className="emoji--large" role="img" aria-label="Happy Face">😊</span>
             <br/>
             Content
           </button>
-          <button className="mood-btn current-moods-happy" onClick={() => this.setState({mood: "happy"})}>
+          <button className="mood-btn current-moods-happy" onClick={() => this.setState({mood: "happy", emoji:"😃"})}>
             <span className="emoji--large" role="img" aria-label="Wide Smile Face">😃</span>
             <br/>
             Happy
           </button>
-          <button className="mood-btn current-moods-very-happy" onClick={() => this.setState({mood: "excited"})}>
+          <button className="mood-btn current-moods-very-happy" onClick={() => this.setState({mood: "excited", emoji:"😆"})}>
             <span className="emoji--large" role="img" aria-label="Laughing Face">😆</span>
             <br/>
             Excited
@@ -68,7 +72,7 @@ export default class CurrentMoods extends React.Component {
         </div>
         <textarea className="current-mood-text" placeholder="Tell me more" value={this.state.value}
                   onChange={this.handleChange}/>
-        <button className="submit-btn" onClick={() => this.uploadData(this.state.mood, this.state.value)}>Submit
+        <button className="submit-btn" onClick={() => this.uploadData(this.state.mood, this.state.value, this.state.emoji)}>Submit
         </button>
       </main>
     );

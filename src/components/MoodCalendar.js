@@ -1,5 +1,12 @@
 import React from 'react';
+import ReactModal from 'react-modal';
 import "./MoodCalendar.css";
+import CurrentMoods from "./CurrentMoods";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import CalendarDetails from "./CalendarDetails";
+import ShareCalendarForm from "./ShareCalendarForm";
+
 const NUM_ROWS = 5;
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 const DAYS_OF_THE_WEEK = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -17,29 +24,160 @@ function getDatesForLastMonth(endDate) {
   }
   return datesForLastMonth;
 }
+
+function isSameDay(dateA, dateB) {
+  return dateA.getDate() === dateB.getDate() && dateA.getMonth() === dateB.getMonth();
+}
+
 export default class MoodCalendar extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      modalIsOpen: false,
+      moodsByDate: [],
+      showCalendarDetails:false,
+      disabledButton:false,
+      selectedDay: "",
+      selectedDayMoods: [],
+      showingShareForm: false,
+      name:"",
+      viewers:[],
+      currentlyViewing:"",
+    };
+  }
+
+  openModal = () => {
+    this.setState({modalIsOpen: true});
+  };
+
+  closeModal = () => {
+    this.setState({modalIsOpen: false});
+  };
+
+  getMoods = async () => {
+    const {uid} =
+      // email ?
+      // admin.auth().getUserByEmail(email):
+      firebase.auth().currentUser;
+    return firebase.firestore()
+      .collection("users")
+      .doc(uid)
+      .collection("moods")
+      .orderBy("date")
+      // Where the date is in X days
+      .get()
+      .then(snapshot =>
+        snapshot.docs
+          .map(snap => snap.data())
+          .map(({date, ...rest}) => ({
+            date: date.toDate(),
+            ...rest
+          }))
+      );
+  };
+
+  getViewers = async() => {
+    return firebase.firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .get().then(snapshot => snapshot.data().viewers);
+  };
+
+  getName = async () =>{
+    return firebase.firestore().collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .get().then(snapshot => snapshot.data().name);
+  };
+
+  async componentDidMount() {
+    try {
+      const name = await this.getName();
+      const viewers = await this.getViewers();
+      const moods = await this.getMoods();
+      const days = getDatesForLastMonth(new Date());
+
+      const moodsByDate = days.map(date => ({
+        date,
+        moods: moods.filter(mood => isSameDay(mood.date, date))
+      }));
+
+      this.setState({moodsByDate});
+      console.log("Got moods!", moodsByDate);
+
+      this.setState({name});
+      this.setState({viewers});
+    } catch (error) {
+      console.error("Failed to fetch moods", error);
+    }
+  }
+
 
   render() {
     const today = new Date();
-    const days = getDatesForLastMonth(today);
+    const days = getDatesForLastMonth(new Date());
     const spanningTwoMonths = days[0].getMonth() !== today.getMonth();
+    const {moodsByDate, viewers} = this.state;
+
     return (
-      <div>
+      <>
         <h2>Mood Calendar</h2>
-        <h3>
+        <h3 className="weekdays font-size-large">
           {spanningTwoMonths
             ? `${MONTHS[today.getMonth() - 1]} - ${MONTHS[today.getMonth()]}`
             : MONTHS[today.getMonth()]
           }
         </h3>
-        <ol className="calendar-grid">
-          {DAYS_OF_THE_WEEK.map(day => <li key={day}>{day}</li>)}
-          {days.map(date =>
-            <li key={date.getTime()}>
-              {date.getDate()}
-            </li>)}
-        </ol>
-      </div>
+
+        <ul className="viewer-tabs">
+          <button className="button-tab" onClick={() => this.setState({currentlyViewing: ""})} >{this.state.name}</button>
+          {viewers.map(viewer =>
+              <li key={viewer}>
+                <button className="button-tab" onClick={() => this.setState({currentlyViewing: viewer})}>{viewer}</button>
+              </li>
+          )}
+          {this.state.showingShareForm
+          ? <ShareCalendarForm/>
+          : <button className="button-tab" onClick={() => this.setState({showingShareForm: true})}>  +  </button>}
+        </ul>
+
+        <div className="calendar-container ">
+          <div className="more-info">
+            {this.state.showCalendarDetails ? <CalendarDetails date={this.state.selectedDay} moods={this.state.selectedDayMoods}/> :null}
+          </div>
+          <div className="calendar-background">
+            <ol className="calendar-grid">
+              {DAYS_OF_THE_WEEK.map(day => <li className="weekdays" key={day}>{day}</li>)}
+              {moodsByDate.map(({date, moods}) =>
+                <li key={date.getTime()}>
+                  <button className="day-button" disabled={this.state.disabledButton}
+                    onClick={() => {
+                      this.setState({
+                        showCalendarDetails: true,
+                        selectedDay: date,
+                        selectedDayMoods: moods,
+                      });
+                    }}>
+                    {date.getDate()}
+                    {/*{moods.map(mood => mood != [] ? mood.mood : this.setState({disabledButton: true}))}*/}
+                    {moods.map(mood => mood.emoji)}
+                  </button>
+                </li>)}
+            </ol>
+          </div>
+        </div>
+
+        <button type="button" onClick={this.openModal} className="submit-btn">Add Today's Mood</button>
+        <ReactModal
+          isOpen={this.state.modalIsOpen}
+          onRequestClose={this.closeModal}
+          appElement={document.body}
+          contentLabel="Mood Selector">
+          <div>
+            <CurrentMoods/>
+          </div>
+        </ReactModal>
+      </>
     );
   }
 }

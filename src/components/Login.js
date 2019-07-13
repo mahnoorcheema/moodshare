@@ -13,7 +13,7 @@ export default class Login extends React.Component {
       email: "",
       password: "",
     };
-  }
+  };
 
   signIn = async (event) => {
     event.preventDefault();
@@ -45,8 +45,8 @@ export default class Login extends React.Component {
           <input name="password" type="password" placeholder="password" onChange={this.handleInputChange}/>
         </label>
         <button className="submit-btn" type="submit">Log In</button>
-        Don't have an account? Sign up &nbsp;
-        <Link to="/create-account">here </Link>
+        Don't have an account? &nbsp;
+        <Link to="/create-account">Sign up  </Link>
       </form>)
   };
 }
